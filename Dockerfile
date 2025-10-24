@@ -1,6 +1,6 @@
 
 # Etapa 1: Build
-FROM node:23.12.0-alpine AS builder
+FROM node:23.11.1-alpine AS builder
 
 # Crear directorio de trabajo
 WORKDIR /app
@@ -21,7 +21,7 @@ ENV NODE_ENV=production
 RUN npm run build  && npm run copy-assets
 
 # Etapa 2: Producción
-FROM node:23.12.0-alpine AS production
+FROM node:23.11.1-alpine AS production
 
 WORKDIR /app
 ENV NODE_ENV=production
@@ -37,7 +37,7 @@ RUN echo "=== Archivos en dist ===" && ls -la dist
 RUN echo "=== Archivos en la raíz ===" && ls -la
 
 # Exponer el puerto si aplica (ajusta según tu app)
-EXPOSE 3010
+EXPOSE 3000
 
 # Comando de inicio
 CMD ["node", "dist/main"]
