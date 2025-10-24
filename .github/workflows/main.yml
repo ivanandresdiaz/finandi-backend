@@ -9,7 +9,7 @@ env:
   PROJECT_ID: 'finance-diaz'
   REGION: 'us-central1'
   SERVICE: 'finandi-backend'
-  WORKLOAD_IDENTITY_PROVIDER: 'projects/$(gcloud projects describe finance-diaz --format="value(projectNumber)")/locations/global/workloadIdentityPools/github-pool/providers/github-provider'
+  WORKLOAD_IDENTITY_PROVIDER: 'projects/234208175023/locations/global/workloadIdentityPools/github-pool/providers/github-provider'
   SERVICE_ACCOUNT: 'cloud-run-deployer@finance-diaz.iam.gserviceaccount.com'
 
 jobs:
