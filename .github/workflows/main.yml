@@ -1,0 +1,69 @@
+name: 'Build and Deploy to Cloud Run'
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  PROJECT_ID: 'finance-diaz'
+  REGION: 'us-central1'
+  SERVICE: 'finandi-backend'
+  WORKLOAD_IDENTITY_PROVIDER: 'projects/234208175023/locations/global/workloadIdentityPools/github-pool/providers/github-provider'
+  SERVICE_ACCOUNT: 'cloud-run-deployer@finance-diaz.iam.gserviceaccount.com'
+
+jobs:
+  deploy:
+    runs-on: 'ubuntu-latest'
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+      - name: 'Checkout'
+        uses: 'actions/checkout@v4'
+
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          token_format: 'access_token'
+          workload_identity_provider: '${{ env.WORKLOAD_IDENTITY_PROVIDER }}'
+          service_account: '${{ env.SERVICE_ACCOUNT }}'
+
+      - name: 'Docker Auth'
+        uses: 'docker/login-action@v3'
+        with:
+          username: 'oauth2accesstoken'
+          password: '${{ steps.auth.outputs.access_token }}'
+          registry: '${{ env.REGION }}-docker.pkg.dev'
+
+      - name: 'Build and Push Container'
+        run: |
+          DOCKER_TAG="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}/${{ env.SERVICE }}:${{ github.sha }}"
+          docker build -t "$DOCKER_TAG" .
+          docker push "$DOCKER_TAG"
+
+      - name: 'Deploy to Cloud Run'
+        uses: 'google-github-actions/deploy-cloudrun@v2'
+        with:
+          service: '${{ env.SERVICE }}'
+          region: '${{ env.REGION }}'
+          image: '${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}/${{ env.SERVICE }}:${{ github.sha }}'
+          secrets: |-
+            SERVICE_ACCOUNT_FIREBASE_MICROFINANZAS2=SERVICE_ACCOUNT_FIREBASE_MICROFINANZAS2:latest
+          flags: |
+            --platform=managed
+            --allow-unauthenticated
+            --cpu=1
+            --port=3000
+            --memory=512Mi
+            --max-instances=5
+            --min-instances=0
+            --timeout=600s
+            --concurrency=80
+            --service-account='${{ env.SERVICE_ACCOUNT }}'
+
+      - name: 'Show Output URL'
+        run: |
+          echo "✅ Cloud Run URL: ${{ steps.deploy.outputs.url }}"
