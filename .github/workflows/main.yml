@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-
 env:
   PROJECT_ID: 'finance-diaz'
   REGION: 'us-central1'
