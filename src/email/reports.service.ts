@@ -19,6 +19,7 @@ export class ReportesService {
       ),
     };
   }
+
   private pdfDocumentToBuffer(
     pdfDocument: PDFKit.PDFDocument,
   ): Promise<Buffer> {
@@ -45,15 +46,17 @@ export class ReportesService {
     });
   }
   async embargo_titular(values: {
-    monto: number;
-    cedula_titular: number;
-    empresa_nombre: string;
-    nombre_titular: string;
+    COOPERATIVA: string;
+    CIUDAD: string;
+    'SALDO LIBRANZA': number;
+    CEDULA: number;
+    PAGADURIA: string;
+    NOMBRE: string;
+    PAGARE: string;
     tipo_participante: string;
-    pagare_numero: string;
-    email: string;
+    'CORREO DEUDOR': string;
   }) {
-    const { monto } = values;
+    const monto = values['SALDO LIBRANZA'];
     const formattedDate = DateFormatter.getDDMMYYYY(new Date());
     const formattedNumber = formatNumber(monto);
     const letraMonto = numeroToLetras(monto);
@@ -67,7 +70,7 @@ export class ReportesService {
       },
       content: [
         {
-          text: `Bucaramanga, ${formattedDate}`,
+          text: `${values.CIUDAD}, ${formattedDate}`,
           alignment: 'right',
           margin: [0, 0, 0, 20],
         },
@@ -76,10 +79,10 @@ export class ReportesService {
             'Señor\n',
             { text: 'PAGADOR\n', bold: true },
             {
-              text: `${values.empresa_nombre}\n`,
+              text: `${values.PAGADURIA}\n`,
               bold: true,
             },
-            'Ciudad \n',
+            `Ciudad ${values.CIUDAD} \n`,
           ],
           margin: [0, 0, 0, 20],
         },
@@ -88,7 +91,7 @@ export class ReportesService {
             { text: 'REF. ', bold: true },
             'Descuentos a favor de Cooperativas (Ley 79/88)',
             {
-              text: 'Cooperativa Multiactiva Coasistir Ltda “COASISTIR LTDA”\n\n',
+              text: `${values.COOPERATIVA}\n\n`,
               bold: true,
             },
           ],
@@ -97,17 +100,17 @@ export class ReportesService {
           text: [
             `Con fundamento en lo estipulado por los artículos 142 de la ley 79 de 1988 (ley cooperativa) y literal b del artículo 59 del código sustantivo del trabajo, en forma por demás comedida solicito que de cualquier cantidad que haya de pagarse por concepto de pensiones, prestaciones, primas, retroactivos, sobresueldos, indemnizaciones, bonificaciones o cualquier otro emolumento al trabajador de esa entidad, a `,
             {
-              text: `${values.nombre_titular} `,
+              text: `${values.NOMBRE} `,
               bold: true,
             },
             'con cédula de ciudadanía número',
-            { text: ` ${formatNumber(values.cedula_titular)} `, bold: true },
+            { text: ` ${formatNumber(values.CEDULA)} `, bold: true },
             'se sirva deducir y retener en su calidad de',
             { text: ` ${values.tipo_participante} `, bold: true },
             'de la obligación y con destino a esta entidad hasta el 50% de su salario, pensión, honorarios, comisiones o cualquier otro emolumento hasta cubrir la suma',
             { text: `${letraMonto} ($${formattedNumber})`, bold: true },
             ', correspondiente al pagaré',
-            { text: ` No. ${values.pagare_numero} `, bold: true },
+            { text: ` No. ${values.PAGARE} `, bold: true },
             'a la ',
             { text: 'COOPERATIVA MULTIACTIVA COASISTIR LTDA', bold: true },
             ', la cual se encuentra en mora.\n\n',
@@ -160,7 +163,7 @@ export class ReportesService {
     const pdf = this.printerPdfService.createPdf(docDefinition);
     return this.pdfDocumentToBuffer(pdf);
   }
-  async prejuridico_titular(values: {
+  async prejuridico_codeudor(values: {
     nombre_titular: string;
     celular_titular: string;
     direccion: string;
