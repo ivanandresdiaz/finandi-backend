@@ -10,45 +10,57 @@ import { Timestamp } from 'firebase-admin/firestore';
 
 const cartas = [
   {
-    id: 'embargo_titular',
-    asunto: 'Cartera Coompartir',
+    id: 'coasistir_embargo_titular',
+    asunto: 'Coasistir - Notificación de Embargo',
     values: [
-      { value: 'monto', type: 'number', default_value: 11550000, order: 1 },
       {
-        value: 'cedula_titular',
+        value: 'SALDO LIBRANZA',
         type: 'number',
-        default_value: 1095812565,
+        default_value: 100_000_0,
         order: 2,
       },
       {
-        value: 'empresa_nombre',
-        type: 'string',
-        default_value: 'TECNOLOGIAS INTEGRALES DE SEGURIDAD DE COLOMBIA LTDA',
+        value: 'CEDULA',
+        type: 'number',
+        default_value: 1119187766,
         order: 3,
       },
       {
-        value: 'nombre_titular',
+        value: 'PAGADURIA',
         type: 'string',
-        default_value: 'NESTOR ENRIQUE ORTIZ SUAREZ',
+        default_value: 'EMPRESA XYZ S.A.S',
         order: 4,
+      },
+      {
+        value: 'NOMBRE',
+        type: 'string',
+        default_value: 'JUAN PEREZ',
+        order: 5,
+      },
+      {
+        value: 'CIUDAD',
+        type: 'string',
+        default_value: 'BUCARAMANGA',
+        order: 6,
+      },
+      {
+        value: 'PAGARE',
+        type: 'number',
+        default_value: 33221,
+        order: 7,
       },
       {
         value: 'tipo_participante',
         type: 'string',
         default_value: 'TITULAR',
-        order: 5,
+        order: 8,
       },
+
       {
-        value: 'pagare_numero',
-        type: 'number',
-        default_value: 33221,
-        order: 6,
-      },
-      {
-        value: 'email',
+        value: 'CORREO DEUDOR',
         type: 'email',
         default_value: 'miexample@gmail.com',
-        order: 7,
+        order: 9,
       },
     ],
   },
@@ -88,7 +100,7 @@ const cartas = [
         order: 6,
       },
       {
-        value: 'email',
+        value: 'CORREO DEUDOR',
         type: 'email',
         default_value: 'miexample@gmail.com',
         order: 7,
@@ -216,7 +228,6 @@ export class EmailService {
       };
     });
     const envios = await Promise.all(promises);
-
     const results = await lastValueFrom(
       from(envios).pipe(
         mergeMap(
@@ -230,22 +241,25 @@ export class EmailService {
               if (!carta) {
                 throw new Error('Carta no encontrada');
               }
-              if (carta_id === EnumCartas.embargo_titular) {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-                const pdf = await this.reportesService.embargo_titular(row);
+              if (carta_id === EnumCartas.coasistir_embargo_titular) {
+                const pdf =
+                  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+                  await this.reportesService.coasistir_embargo_titular(row);
+                console.log('row', row);
                 const buffer = pdf.toString('base64');
                 await this.graphService.sendMail({
                   accessToken: access_token,
                   pdfBase64: buffer,
-                  to: row['email'],
-                  subject: carta.asunto + ` - ${row['nombre_titular']}`,
-                  body: `Estimado(a) ${row['nombre_titular']}, adjunto encontrará la carta de notificación correspondiente.`,
+                  to: row['CORREO DEUDOR'],
+                  subject: carta.asunto + ` - ${row['NOMBRE']}`,
+                  body: `Estimado(a) ${row['NOMBRE']}, adjunto encontrará la carta de notificación correspondiente.`,
                 });
               }
               // Mapear los valores de la fila a los valores esperados en el reporte
               if (carta_id === EnumCartas.prejuridico_titular) {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-                const pdf = await this.reportesService.prejuridico_titular(row);
+                const pdf =
+                  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+                  await this.reportesService.prejuridico_codeudor(row);
                 const buffer = pdf.toString('base64');
                 await this.graphService.sendMail({
                   accessToken: access_token,
@@ -256,7 +270,6 @@ export class EmailService {
                 });
               }
               // .slice(0, 150);
-
               const uploadRows = await dbFire
                 .collection('cartera_envios')
                 .doc(addRows.id)

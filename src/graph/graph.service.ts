@@ -18,33 +18,39 @@ export class GraphService {
     to: string;
     body: string;
   }) {
-    const { accessToken, pdfBase64, subject, to, body } = params;
-    const client = this.getGraphClient(accessToken);
-    const message = {
-      message: {
-        subject: subject,
-        body: {
-          contentType: 'html',
-          content: body,
+    try {
+      const { accessToken, pdfBase64, subject, to, body } = params;
+      console.log('params', params);
+      const client = this.getGraphClient(accessToken);
+      const message = {
+        message: {
+          subject: subject,
+          body: {
+            contentType: 'html',
+            content: body,
+          },
+          toRecipients: [
+            {
+              emailAddress: { address: to },
+            },
+          ],
+          attachments: [
+            {
+              '@odata.type': '#microsoft.graph.fileAttachment',
+              name: `Carta_${subject}.pdf`,
+              contentType: 'application/pdf',
+              contentBytes: pdfBase64,
+            },
+          ],
         },
-        toRecipients: [
-          {
-            emailAddress: { address: to },
-          },
-        ],
-        attachments: [
-          {
-            '@odata.type': '#microsoft.graph.fileAttachment',
-            name: `Carta_${subject}.pdf`,
-            contentType: 'application/pdf',
-            contentBytes: pdfBase64,
-          },
-        ],
-      },
 
-      saveToSentItems: 'true',
-    };
-    await client.api('/me/sendMail').post(message);
-    return { success: true };
+        saveToSentItems: 'true',
+      };
+      await client.api('/me/sendMail').post(message);
+      return { success: true };
+    } catch (error) {
+      console.error('Error sending email:', error);
+      throw error;
+    }
   }
 }

@@ -45,8 +45,7 @@ export class ReportesService {
       pdfDocument.end();
     });
   }
-  async embargo_titular(values: {
-    COOPERATIVA: string;
+  async coasistir_embargo_titular(values: {
     CIUDAD: string;
     'SALDO LIBRANZA': number;
     CEDULA: number;
@@ -91,7 +90,7 @@ export class ReportesService {
             { text: 'REF. ', bold: true },
             'Descuentos a favor de Cooperativas (Ley 79/88)',
             {
-              text: `${values.COOPERATIVA}\n\n`,
+              text: `Cooperativa Multiactiva Coasistir Ltda “COASISTIR LTDA”\n\n`,
               bold: true,
             },
           ],
@@ -104,8 +103,8 @@ export class ReportesService {
               bold: true,
             },
             'con cédula de ciudadanía número',
-            { text: ` ${formatNumber(values.CEDULA)} `, bold: true },
-            'se sirva deducir y retener en su calidad de',
+            { text: `C.C. ${formatNumber(values.CEDULA)}`, bold: true },
+            ', se sirva deducir y retener en su calidad de',
             { text: ` ${values.tipo_participante} `, bold: true },
             'de la obligación y con destino a esta entidad hasta el 50% de su salario, pensión, honorarios, comisiones o cualquier otro emolumento hasta cubrir la suma',
             { text: `${letraMonto} ($${formattedNumber})`, bold: true },
@@ -113,7 +112,7 @@ export class ReportesService {
             { text: ` No. ${values.PAGARE} `, bold: true },
             'a la ',
             { text: 'COOPERATIVA MULTIACTIVA COASISTIR LTDA', bold: true },
-            ', la cual se encuentra en mora.\n\n',
+            ' y la cual se encuentra en mora.\n\n',
           ],
         },
         {
@@ -126,17 +125,17 @@ export class ReportesService {
             { text: ' COOPERATIVA MULTIACTIVA COASISTIR LTDA', bold: true },
             ', y por favor enviar los soportes de embargo al correo ',
             {
-              text: 'cartera.coasistir@outlook.es.\n\n',
+              text: 'cartera.coasistir@outlook.es.',
               decoration: 'underline',
               bold: true,
               link: 'mailto:cartera.coasistir@outlook.es',
             },
+            {
+              text: `Cabe aclarar que cualquier acuerdo al que se llegue se enviará con este tipo de documento con su numeración interna; NUNCA haremos acuerdos verbales. Igualmente, cualquier acuerdo de descuento se hará directamente por medio de ustedes y no de forma personal con su empleado.\n\n`,
+            },
           ],
         },
 
-        {
-          text: `Cabe aclarar que cualquier acuerdo al que se llegue se enviará con este tipo de documento con su numeración interna; NUNCA haremos acuerdos verbales. Igualmente, cualquier acuerdo de descuento se hará directamente por medio de ustedes y no de forma personal con su empleado.\n\n`,
-        },
         {
           text: [
             `No sobra recalcar que de conformidad con el parágrafo del artículo 142 citado, el incumplimiento de lo anterior hace deudor solidario del crédito a la empresa y/o pagador, conllevando por lo tanto a que esta cooperativa inicie acción judicial contra los mismos, según lo permite el artículo 142 de la ley 79 de 1988.`,

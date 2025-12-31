@@ -1,7 +1,8 @@
 import { ArrayMinSize, IsArray, IsEnum, IsString } from 'class-validator';
 
 export enum EnumCartas {
-  embargo_titular = 'embargo_titular',
+  // embargo_titular = 'embargo_titular',
+  coasistir_embargo_titular = 'coasistir_embargo_titular',
   prejuridico_titular = 'prejuridico_titular',
 }
 
