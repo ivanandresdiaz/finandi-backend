@@ -20,7 +20,6 @@ export class GraphService {
   }) {
     try {
       const { accessToken, pdfBase64, subject, to, body } = params;
-      console.log('params', params);
       const client = this.getGraphClient(accessToken);
       const message = {
         message: {
