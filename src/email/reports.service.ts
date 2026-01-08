@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { TDocumentDefinitions } from 'pdfmake/interfaces';
+import { Content, TDocumentDefinitions } from 'pdfmake/interfaces';
 import { PrinterPdfService } from 'src/printer-pdf/printer-pdf.service';
 import { DateFormatter } from 'src/utils/Dateformatter';
 import formatNumber from 'src/utils/formatNumber';
@@ -16,6 +16,18 @@ export class ReportesService {
     return {
       lider_cartera_firma: resolvePathAssets(
         '../../assets/images/firmaMilagros.png',
+      ),
+      coasistir_logo: resolvePathAssets(
+        '../../assets/images/coasistir/logo.png',
+      ),
+      coasistir_encabezado: resolvePathAssets(
+        '../../assets/images/coasistir/encabezado.png',
+      ),
+      coasistir_pie_pagina: resolvePathAssets(
+        '../../assets/images/coasistir/pie_pagina.png',
+      ),
+      coasistir_contacto: resolvePathAssets(
+        '../../assets/images/coasistir/contacto.png',
       ),
     };
   }
@@ -45,6 +57,64 @@ export class ReportesService {
       pdfDocument.end();
     });
   }
+  private coasistir_header(): Content[] {
+    return [
+      {
+        stack: [
+          {
+            image: 'coasistir_encabezado',
+            // Size of with the Page
+            width: 650,
+            height: 150,
+            margin: [-45, -70, 0, 0],
+          },
+          {
+            image: 'coasistir_logo',
+            width: 250,
+            // alignment: 'center',
+            margin: [210, -80, 0, 0], // Margen negativo para superponer el logo sobre el encabezado
+          },
+        ],
+        margin: [0, 0, 0, 0], // Sin márgenes, parte del diseño de la carta
+      },
+    ];
+  }
+  private coasistir_footer(is_contacto: boolean = true): Content {
+    // {
+    //   image: 'coasistir_contacto',
+    //   width: 250,
+    //   // alignment: 'center',
+    //   margin: [100, 0, -80, 0], // Margen negativo para superponer el logo sobre el encabezado
+    // },
+    if (is_contacto) {
+      return {
+        stack: [
+          {
+            image: 'coasistir_contacto',
+            width: 250,
+            margin: [100, -70, 0, 0], // Margen negativo para superponer el logo sobre el encabezado
+          },
+
+          {
+            image: 'coasistir_pie_pagina',
+            width: 650,
+            height: 80,
+            margin: [0, -25, 0, 0],
+          },
+        ],
+      };
+    }
+    return {
+      stack: [
+        {
+          image: 'coasistir_pie_pagina',
+          width: 650,
+          height: 80,
+          margin: [0, -25, 0, 0],
+        },
+      ],
+    };
+  }
   async coasistir_embargo_titular(values: {
     CIUDAD: string;
     'SALDO LIBRANZA': number;
@@ -67,7 +137,9 @@ export class ReportesService {
         alignment: 'justify',
         lineHeight: 1.4,
       },
+      footer: this.coasistir_footer(false),
       content: [
+        ...this.coasistir_header(),
         {
           text: `${values.CIUDAD}, ${formattedDate}`,
           alignment: 'right',
@@ -179,6 +251,7 @@ export class ReportesService {
     const letraMonto = numeroToLetras(monto);
     const docDefinition: TDocumentDefinitions = {
       images: this.loadImageAssets(),
+      footer: this.coasistir_footer(false),
       defaultStyle: {
         // font: 'Helvetica',
         fontSize: 11,
@@ -186,6 +259,8 @@ export class ReportesService {
         lineHeight: 1.4,
       },
       content: [
+        ...this.coasistir_header(),
+
         {
           text: `${values.CIUDAD}, ${formattedDate}`,
           alignment: 'right',
@@ -299,7 +374,9 @@ export class ReportesService {
         alignment: 'justify',
         lineHeight: 1.4,
       },
+      footer: this.coasistir_footer(),
       content: [
+        ...this.coasistir_header(),
         {
           text: `Bucaramanga, ${formattedDate}`,
           alignment: 'right',
@@ -403,7 +480,9 @@ De no ponerse al día en el crédito, se procederá a pasar la solicitud de emba
         alignment: 'justify',
         lineHeight: 1.4,
       },
+      footer: this.coasistir_footer(),
       content: [
+        ...this.coasistir_header(),
         {
           text: `Bucaramanga, ${formattedDate}`,
           alignment: 'right',
