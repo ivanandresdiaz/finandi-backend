@@ -10,10 +10,11 @@ async function bootstrap() {
   //   credentials: true, // si planeas enviar cookies o tokens
   // });
   app.enableCors({
-    origin: ['https://finandiaz.vercel.app', 'http://localhost:3001'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true,
+    origin: ['*'],
+    // origin: ['https://finandiaz.vercel.app', 'http://localhost:3001'],
+    // methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    // allowedHeaders: ['Content-Type', 'Authorization'],
+    // credentials: true,
   });
 
   //( PreFIX )
