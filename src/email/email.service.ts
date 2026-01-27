@@ -308,7 +308,7 @@ export class EmailService {
                   accessToken: access_token,
                   pdfBase64: buffer,
                   to: row['CORREO DEUDOR'],
-                  subject: carta.asunto + ` - ${row['NOMBRE']}`,
+                  subject: "Titular" + ` - ${row['NOMBRE']}`+ " - " + carta.asunto,
                   body: `Estimado(a) ${row['NOMBRE']}, adjunto encontrará la carta de notificación correspondiente.`,
                 });
               }
@@ -322,7 +322,7 @@ export class EmailService {
                   accessToken: access_token,
                   pdfBase64: buffer,
                   to: row['CORREO CODEUDOR'],
-                  subject: carta.asunto + ` - ${row['CODEUDOR']}`,
+                  subject: "Codeudor" + ` - ${row['CODEUDOR']}`+ " - " + carta.asunto,
                   body: `Estimado(a) ${row['CODEUDOR']}, adjunto encontrará la carta de notificación correspondiente.`,
                 });
               }
@@ -339,7 +339,7 @@ export class EmailService {
                   accessToken: access_token,
                   pdfBase64: buffer,
                   to: row['CORREO CODEUDOR'],
-                  subject: carta.asunto + ` - ${row['CODEUDOR']}`,
+                  subject: "Codeudor" + ` - ${row['CODEUDOR']}`+ " - " + carta.asunto,
                   body: `Estimado(a) ${row['CODEUDOR']}, adjunto encontrará la carta de notificación correspondiente.`,
                 });
               }
@@ -355,7 +355,7 @@ export class EmailService {
                   accessToken: access_token,
                   pdfBase64: buffer,
                   to: row['CORREO DEUDOR'],
-                  subject: carta.asunto + ` - ${row['NOMBRE']}`,
+                  subject: "Titular" + ` - ${row['NOMBRE']}`+ " - " + carta.asunto,
                   body: `Estimado(a) ${row['NOMBRE']}, adjunto encontrará la carta de notificación correspondiente.`,
                 });
               }

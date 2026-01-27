@@ -414,7 +414,7 @@ export class ReportesService {
             { text: ` No ${values.PAGARE} `, bold: true },
             `suscrito por usted.
 
-A efecto de evitarle molestias de carácter judicial dispone del término prudencial de Tres (3) días hábiles para acercarse a las oficinas de mi poderdante ubicadas en la carrera 18 # 36-64 oficina 2-08 en B/manga, Teléfonos 6906601-6802646, a cancelar la deuda. Si ya realizó el pago, haga caso omiso a este documento. Este cobro pre jurídico tiene un valor de $17.000 =. Tener en cuenta que este documento se cobrará en el próximo pago que realice.
+A efecto de evitarle molestias de carácter judicial dispone del término prudencial de Tres (3) días hábiles para acercarse a las oficinas de mi poderdante ubicadas en la carrera 18 # 36-64 oficina 2-08 en B/manga, Teléfonos 6513234 - 6815454, a cancelar la deuda. Si ya realizó el pago, haga caso omiso a este documento. Este cobro pre jurídico tiene un valor de $19.000 =. Tener en cuenta que este documento se cobrará en el próximo pago que realice.
 
 De no ponerse al día en el crédito, se procederá a pasar la solicitud de embargo tanto a usted como a su titular debido al atraso tan alto que presenta. Si cambió de lugar de residencia, de número de contacto o correo electrónico es su deber informar inmediatamente a la cooperativa, de lo contrario no nos hacemos responsables por no tener los datos actualizados de notificación.`,
           ],
@@ -519,7 +519,7 @@ De no ponerse al día en el crédito, se procederá a pasar la solicitud de emba
             { text: ` No ${values.PAGARE} `, bold: true },
             `suscrito por usted.
 
-A efecto de evitarle molestias de carácter judicial dispone del término prudencial de Tres (3) días hábiles para acercarse a las oficinas de mi poderdante ubicadas en la carrera 18 # 36-64 oficina 2-08 en B/manga, Teléfonos 6906601-6802646, a cancelar la deuda. Si ya realizó el pago, haga caso omiso a este documento. Este cobro pre jurídico tiene un valor de $17.000 =. 
+A efecto de evitarle molestias de carácter judicial dispone del término prudencial de Tres (3) días hábiles para acercarse a las oficinas de mi poderdante ubicadas en la carrera 18 # 36-64 oficina 2-08 en B/manga, Teléfonos 6513234 - 6815454, a cancelar la deuda. Si ya realizó el pago, haga caso omiso a este documento. Este cobro pre jurídico tiene un valor de $19.000 =. 
 
 De no ponerse al día en el crédito, se procederá a pasar la solicitud de embargo tanto a usted como a su codeudora debido al atraso que presenta.
 
