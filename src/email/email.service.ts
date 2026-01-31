@@ -7,8 +7,215 @@ import { EmailCarteraCartasSendDto, EnumCartas } from './dto/create-email.dto';
 import { from, lastValueFrom, mergeMap, toArray } from 'rxjs';
 import { FirebaseService } from '../firebase/firebase.service';
 import { Timestamp } from 'firebase-admin/firestore';
+const cartasCompartir = [
+  {
+    id: "compartir_embargo_titular",
+    empresa: "compartir",
+    asunto: "Notificación de Embargo",
+    values: [
+      {
+        value: "SALDO LIBRANZA",
+        type: "number",
+        default_value: 100_000_0,
+        order: 2,
+      },
+      {
+        value: "CEDULA",
+        type: "number",
+        default_value: 1119187766,
+        order: 3,
+      },
+      {
+        value: "PAGADURIA",
+        type: "string",
+        default_value: "EMPRESA XYZ S.A.S",
+        order: 4,
+      },
+      {
+        value: "NOMBRE",
+        type: "string",
+        default_value: "JUAN PEREZ",
+        order: 5,
+      },
+      {
+        value: "CIUDAD",
+        type: "string",
+        default_value: "Bucaramanga",
+        order: 6,
+      },
+      {
+        value: "PAGARE",
+        type: "number",
+        default_value: 33221,
+        order: 7,
+      },
 
+      {
+        value: "CORREO DEUDOR",
+        type: "email",
+        default_value: "miexample@gmail.com",
+        order: 9,
+      },
+    ],
+  },
+  {
+    id: "compartir_embargo_codeudor",
+    empresa: "compartir",
+    asunto: "Notificación de Embargo",
+    values: [
+      {
+        value: "SALDO LIBRANZA",
+        type: "number",
+        default_value: 100_000_0,
+        order: 2,
+      },
+      {
+        value: "CEDULA",
+        type: "number",
+        default_value: 1119187766,
+        order: 3,
+      },
+      {
+        value: "PAGADURIA",
+        type: "string",
+        default_value: "EMPRESA XYZ S.A.S",
+        order: 4,
+      },
+      {
+        value: "CODEUDOR",
+        type: "string",
+        default_value: "JUAN PEREZ",
+        order: 5,
+      },
+      {
+        value: "CIUDAD",
+        type: "string",
+        default_value: "Bucaramanga",
+        order: 6,
+      },
+      {
+        value: "PAGARE",
+        type: "number",
+        default_value: 33221,
+        order: 7,
+      },
+
+      {
+        value: "CORREO CODEUDOR",
+        type: "email",
+        default_value: "miexample@gmail.com",
+        order: 9,
+      },
+    ],
+  },
+  {
+    id: "compartir_prejuridico_codeudor",
+    empresa: "compartir",
+    asunto: "Notificación de Prejurídico",
+    values: [
+      {
+        value: "NOMBRE",
+        type: "string",
+        default_value: "Nombre Juan",
+        order: 1,
+      },
+      {
+        value: "TELEFONO 1",
+        type: "number",
+        default_value: 3001234567,
+        order: 1,
+      },
+      {
+        value: "DIRECCION",
+        type: "string",
+        default_value: "Calle Juan",
+        order: 2,
+      },
+      {
+        value: "CODEUDOR",
+        type: "string",
+        default_value: "NESTOR CODEUDOR",
+        order: 3,
+      },
+
+      {
+        value: "PAGARE",
+        type: "number",
+        default_value: 33221,
+        order: 4,
+      },
+      {
+        value: "CUOTAS ATRAZADAS",
+        type: "number",
+        default_value: 33221,
+        order: 5,
+      },
+      {
+        value: "MONTO ATRAZADO",
+        type: "number",
+        default_value: 33221,
+        order: 5,
+      },
+      {
+        value: "CORREO CODEUDOR",
+        type: "email",
+        default_value: "miexample@gmail.com",
+        order: 6,
+      },
+    ],
+  },
+  {
+    id: "compartir_prejuridico_titular",
+    empresa: "compartir",
+    asunto: "Notificación de Prejurídico",
+    values: [
+      {
+        value: "NOMBRE",
+        type: "string",
+        default_value: "Nombre Juan",
+        order: 1,
+      },
+      {
+        value: "TELEFONO 1",
+        type: "number",
+        default_value: 3001234567,
+        order: 1,
+      },
+      {
+        value: "DIRECCION",
+        type: "string",
+        default_value: "Calle Juan",
+        order: 2,
+      },
+      {
+        value: "PAGARE",
+        type: "number",
+        default_value: 33221,
+        order: 4,
+      },
+      {
+        value: "CUOTAS ATRAZADAS",
+        type: "number",
+        default_value: 33221,
+        order: 5,
+      },
+      {
+        value: "MONTO ATRAZADO",
+        type: "number",
+        default_value: 33221,
+        order: 5,
+      },
+      {
+        value: "CORREO DEUDOR",
+        type: "email",
+        default_value: "miexample@gmail.com",
+        order: 6,
+      },
+    ],
+  },
+];
 const cartas = [
+  ...cartasCompartir,
   {
     id: 'coasistir_embargo_titular',
     asunto: 'Coasistir - Notificación de Embargo',
@@ -301,7 +508,10 @@ export class EmailService {
               if (carta_id === EnumCartas.coasistir_embargo_titular) {
                 const pdf =
                   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-                  await this.reportesService.coasistir_embargo_titular(row);
+                  await this.reportesService.coasistir_embargo_titular({
+                    row:row,
+                    isCompartir:false,
+                  });
                 console.log('row', row);
                 const buffer = pdf.toString('base64');
                 await this.graphService.sendMail({
@@ -313,10 +523,12 @@ export class EmailService {
                 });
               }
               if (carta_id === EnumCartas.coasistir_embargo_codeudor) {
-                console.log('row', row);
+                
                 const pdf =
-                  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-                  await this.reportesService.coasistir_embargo_codeudor(row);
+                  await this.reportesService.coasistir_embargo_codeudor({
+                    row:row,
+                    isCompartir:false,
+                  });
                 const buffer = pdf.toString('base64');
                 await this.graphService.sendMail({
                   accessToken: access_token,
@@ -328,11 +540,10 @@ export class EmailService {
               }
               // Mapear los valores de la fila a los valores esperados en el reporte
               if (carta_id === EnumCartas.coasistir_prejuridico_codeudor) {
-                console.log('row', row);
                 const pdf =
                   await this.reportesService.coasistir_prejuridico_codeudor(
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-                    row,
+                    
+                    {row:row, isCompartir:false},
                   );
                 const buffer = pdf.toString('base64');
                 await this.graphService.sendMail({
@@ -347,8 +558,7 @@ export class EmailService {
                 console.log('row', row);
                 const pdf =
                   await this.reportesService.coasistir_prejuridico_titular(
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-                    row,
+                    {row:row, isCompartir:false},
                   );
                 const buffer = pdf.toString('base64');
                 await this.graphService.sendMail({
@@ -359,7 +569,67 @@ export class EmailService {
                   body: `Estimado(a) ${row['NOMBRE']}, adjunto encontrará la carta de notificación correspondiente.`,
                 });
               }
-
+// COMPARTIR 
+if (carta_id === EnumCartas.compartir_embargo_titular) {
+  const pdf =
+    
+    await this.reportesService.coasistir_embargo_titular({row:row, isCompartir:true});
+  console.log('row', row);
+  const buffer = pdf.toString('base64');
+  await this.graphService.sendMail({
+    accessToken: access_token,
+    pdfBase64: buffer,
+    to: row['CORREO DEUDOR'],
+    subject: "Titular" + ` - ${row['NOMBRE']}`+ " - " + carta.asunto,
+    body: `Estimado(a) ${row['NOMBRE']}, adjunto encontrará la carta de notificación correspondiente.`,
+  });
+}
+if (carta_id === EnumCartas.compartir_embargo_codeudor) {
+  console.log('row', row);
+  const pdf =
+    
+    await this.reportesService.coasistir_embargo_codeudor({row:row, isCompartir:true});
+  const buffer = pdf.toString('base64');
+  await this.graphService.sendMail({
+    accessToken: access_token,
+    pdfBase64: buffer,
+    to: row['CORREO CODEUDOR'],
+    subject: "Codeudor" + ` - ${row['CODEUDOR']}`+ " - " + carta.asunto,
+    body: `Estimado(a) ${row['CODEUDOR']}, adjunto encontrará la carta de notificación correspondiente.`,
+  });
+}
+// Mapear los valores de la fila a los valores esperados en el reporte
+if (carta_id === EnumCartas.compartir_prejuridico_codeudor) {
+  const pdf =
+    await this.reportesService.coasistir_prejuridico_codeudor(
+      {row:row, isCompartir:true},
+      
+    );
+  const buffer = pdf.toString('base64');
+  await this.graphService.sendMail({
+    accessToken: access_token,
+    pdfBase64: buffer,
+    to: row['CORREO CODEUDOR'],
+    subject: "Codeudor" + ` - ${row['CODEUDOR']}`+ " - " + carta.asunto,
+    body: `Estimado(a) ${row['CODEUDOR']}, adjunto encontrará la carta de notificación correspondiente.`,
+  });
+}
+if (carta_id === EnumCartas.compartir_prejuridico_titular) {
+  console.log('row', row);
+  const pdf =
+    await this.reportesService.coasistir_prejuridico_titular(
+      
+      {row:row, isCompartir:true},
+    );
+  const buffer = pdf.toString('base64');
+  await this.graphService.sendMail({
+    accessToken: access_token,
+    pdfBase64: buffer,
+    to: row['CORREO DEUDOR'],
+    subject: "Titular" + ` - ${row['NOMBRE']}`+ " - " + carta.asunto,
+    body: `Estimado(a) ${row['NOMBRE']}, adjunto encontrará la carta de notificación correspondiente.`,
+  });
+}
               // .slice(0, 150);
               const uploadRows = await dbFire
                 .collection('cartera_envios')

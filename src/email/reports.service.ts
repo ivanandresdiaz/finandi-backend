@@ -12,22 +12,28 @@ export class ReportesService {
     private readonly printerPdfService: PrinterPdfService,
     // private readonly whatsappService: WhatsappService,
   ) {}
-  private loadImageAssets() {
+  private loadImageAssets(isCompartir: boolean) {
+     const empresa = isCompartir ? 'compartir' : 'coasistir';
     return {
       lider_cartera_firma: resolvePathAssets(
-        '../../assets/images/firmaMilagros.png',
+        `../../assets/images/firmaMilagros.png`
+        
       ),
-      coasistir_logo: resolvePathAssets(
-        '../../assets/images/coasistir/logo.png',
+      logo: resolvePathAssets(
+        `../../assets/images/${empresa}/logo.png`
+        // '../../assets/images/coasistir/logo.png',
       ),
-      coasistir_encabezado: resolvePathAssets(
-        '../../assets/images/coasistir/encabezado.png',
+      encabezado: resolvePathAssets(
+        `../../assets/images/${empresa}/encabezado.png`
+        // '../../assets/images/coasistir/encabezado.png',
       ),
-      coasistir_pie_pagina: resolvePathAssets(
-        '../../assets/images/coasistir/pie_pagina.png',
+      pie_pagina: resolvePathAssets(
+        `../../assets/images/${empresa}/pie_pagina.png`
+        // '../../assets/images/coasistir/pie_pagina.png',
       ),
-      coasistir_contacto: resolvePathAssets(
-        '../../assets/images/coasistir/contacto.png',
+      contacto: resolvePathAssets(
+        `../../assets/images/${empresa}/contacto.png`
+        // '../../assets/images/coasistir/contacto.png',
       ),
     };
   }
@@ -57,19 +63,50 @@ export class ReportesService {
       pdfDocument.end();
     });
   }
+  private getDatosEmpresa(isCompartir: boolean): {
+    nombre: string;
+    nombre_minuscula: string;
+    banco: string;
+    cuenta: string;
+    tipo_cuenta: string;
+    correo: string;
+    telefonos: string;
+  } {
+    if(isCompartir) {
+      return {
+        nombre: 'COOPERATIVA DE APORTES Y CREDITO COOMPARTIR',
+        nombre_minuscula: "Cooperativa de Aportes y Crédito Coompartir Ltda “COOMPARTIR LTDA”",
+        banco: 'CAJA SOCIAL',
+        cuenta: '24048578246',
+        tipo_cuenta: 'AHORROS',
+        correo: 'cartera@compartirltda.com',
+        telefonos: '607 6815454 -  607 6906601 - 318 889 6275',
+      };
+    } else {
+      return {
+        nombre: 'COOPERATIVA MULTIACTIVA COASISTIR',
+        nombre_minuscula: "Cooperativa Multiactiva Coasistir Ltda “COASISTIR LTDA”",
+        banco: 'CAJA SOCIAL',
+        cuenta: '24048578246',
+        tipo_cuenta: 'AHORROS',
+        correo: 'cartera.coasistir@outlook.es',
+        telefonos: '6513234 - 6815454',
+      };
+    }
+  }
   private coasistir_header(): Content[] {
     return [
       {
         stack: [
           {
-            image: 'coasistir_encabezado',
+            image: 'encabezado',
             // Size of with the Page
             width: 650,
             height: 150,
-            margin: [-45, -70, 0, 0],
+            margin: [-50, -70, 0, 0],
           },
           {
-            image: 'coasistir_logo',
+            image: 'logo',
             width: 250,
             // alignment: 'center',
             margin: [210, -80, 0, 0], // Margen negativo para superponer el logo sobre el encabezado
@@ -79,7 +116,7 @@ export class ReportesService {
       },
     ];
   }
-  private coasistir_footer(is_contacto: boolean = true): Content {
+  private coasistir_footer(is_contacto: boolean = true, ): Content {
     // {
     //   image: 'coasistir_contacto',
     //   width: 250,
@@ -90,13 +127,13 @@ export class ReportesService {
       return {
         stack: [
           {
-            image: 'coasistir_contacto',
+            image: 'contacto',
             width: 250,
             margin: [100, -70, 0, 0], // Margen negativo para superponer el logo sobre el encabezado
           },
 
           {
-            image: 'coasistir_pie_pagina',
+            image: 'pie_pagina',
             width: 650,
             height: 80,
             margin: [0, -25, 0, 0],
@@ -107,7 +144,7 @@ export class ReportesService {
     return {
       stack: [
         {
-          image: 'coasistir_pie_pagina',
+          image: 'pie_pagina',
           width: 650,
           height: 80,
           margin: [0, -25, 0, 0],
@@ -115,22 +152,30 @@ export class ReportesService {
       ],
     };
   }
-  async coasistir_embargo_titular(values: {
-    CIUDAD: string;
-    'SALDO LIBRANZA': number;
-    CEDULA: number;
-    PAGADURIA: string;
-    NOMBRE: string;
-    PAGARE: string;
-    // tipo_participante: string;
-    'CORREO DEUDOR': string;
+
+  async coasistir_embargo_titular(params: {
+    row: {
+      CIUDAD: string;
+      'SALDO LIBRANZA': number;
+      CEDULA: number;
+      PAGADURIA: string;
+      NOMBRE: string;
+      PAGARE: string;
+      // tipo_participante: string;
+      'CORREO DEUDOR': string;
+    };
+    isCompartir: boolean;
+   
   }) {
+    
+    const { row: values, isCompartir } = params;
+    const datosEmpresa = this.getDatosEmpresa(isCompartir);
     const monto = values['SALDO LIBRANZA'];
     const formattedDate = DateFormatter.getDDMMYYYY(new Date());
     const formattedNumber = formatNumber(monto);
     const letraMonto = numeroToLetras(monto);
     const docDefinition: TDocumentDefinitions = {
-      images: this.loadImageAssets(),
+      images: this.loadImageAssets(isCompartir),
       defaultStyle: {
         // font: 'Helvetica',
         fontSize: 11,
@@ -162,7 +207,7 @@ export class ReportesService {
             { text: 'REF. ', bold: true },
             'Descuentos a favor de Cooperativas (Ley 79/88)',
             {
-              text: `Cooperativa Multiactiva Coasistir Ltda “COASISTIR LTDA”\n\n`,
+              text: `${datosEmpresa.nombre_minuscula}\n\n`,
               bold: true,
             },
           ],
@@ -183,24 +228,24 @@ export class ReportesService {
             ', correspondiente al pagaré',
             { text: ` No. ${values.PAGARE} `, bold: true },
             'a la ',
-            { text: 'COOPERATIVA MULTIACTIVA COASISTIR LTDA', bold: true },
+            { text: datosEmpresa.nombre, bold: true },
             ' y la cual se encuentra en mora.\n\n',
           ],
         },
         {
           text: [
-            `Lo retenido deberá ser consignado en el banco`,
-            { text: ' CAJA SOCIAL', bold: true },
-            `, cuenta AHORROS No.`,
-            { text: ' 24048578246 ', bold: true },
+            `Lo retenido deberá ser consignado en el banco `,
+            { text: datosEmpresa.banco, bold: true },
+            `, cuenta ${datosEmpresa.tipo_cuenta} No.`,
+            { text: datosEmpresa.cuenta, bold: true },
             'a nombre de la',
-            { text: ' COOPERATIVA MULTIACTIVA COASISTIR LTDA', bold: true },
+            { text: datosEmpresa.nombre, bold: true },
             ', y por favor enviar los soportes de embargo al correo ',
             {
-              text: 'cartera.coasistir@outlook.es.',
+              text: datosEmpresa.correo,
               decoration: 'underline',
               bold: true,
-              link: 'mailto:cartera.coasistir@outlook.es',
+              link: `mailto:${datosEmpresa.correo}`,
             },
             {
               text: `Cabe aclarar que cualquier acuerdo al que se llegue se enviará con este tipo de documento con su numeración interna; NUNCA haremos acuerdos verbales. Igualmente, cualquier acuerdo de descuento se hará directamente por medio de ustedes y no de forma personal con su empleado.\n\n`,
@@ -234,23 +279,28 @@ export class ReportesService {
     const pdf = this.printerPdfService.createPdf(docDefinition);
     return this.pdfDocumentToBuffer(pdf);
   }
-  async coasistir_embargo_codeudor(values: {
-    CIUDAD: string;
-    'SALDO LIBRANZA': number;
-    CEDULA: number;
-    PAGADURIA: string;
-    CODEUDOR: string;
-    PAGARE: string;
-    // tipo_participante: string;
-    'CORREO CODEUDOR': string;
+  async coasistir_embargo_codeudor(params: {
+    row: {
+      CIUDAD: string;
+      'SALDO LIBRANZA': number;
+      CEDULA: number;
+      PAGADURIA: string;
+      CODEUDOR: string;
+      PAGARE: string;
+      // tipo_participante: string;
+      'CORREO CODEUDOR': string;
+    };
+    isCompartir: boolean;
   }) {
+    const { row: values, isCompartir } = params;
+    const datosEmpresa = this.getDatosEmpresa(isCompartir);
     const NOMBRE = values.CODEUDOR;
     const monto = values['SALDO LIBRANZA'];
     const formattedDate = DateFormatter.getDDMMYYYY(new Date());
     const formattedNumber = formatNumber(monto);
     const letraMonto = numeroToLetras(monto);
     const docDefinition: TDocumentDefinitions = {
-      images: this.loadImageAssets(),
+      images: this.loadImageAssets(isCompartir),
       footer: this.coasistir_footer(false),
       defaultStyle: {
         // font: 'Helvetica',
@@ -283,7 +333,7 @@ export class ReportesService {
             { text: 'REF. ', bold: true },
             'Descuentos a favor de Cooperativas (Ley 79/88)',
             {
-              text: `Cooperativa Multiactiva Coasistir Ltda “COASISTIR LTDA”\n\n`,
+              text: `${datosEmpresa.nombre_minuscula}\n\n`,
               bold: true,
             },
           ],
@@ -304,24 +354,24 @@ export class ReportesService {
             ', correspondiente al pagaré',
             { text: ` No. ${values.PAGARE} `, bold: true },
             'a la ',
-            { text: 'COOPERATIVA MULTIACTIVA COASISTIR LTDA', bold: true },
+            { text: datosEmpresa.nombre, bold: true },
             ' y la cual se encuentra en mora.\n\n',
           ],
         },
         {
           text: [
-            `Lo retenido deberá ser consignado en el banco`,
-            { text: ' CAJA SOCIAL', bold: true },
-            `, cuenta AHORROS No.`,
-            { text: ' 24048578246 ', bold: true },
+            `Lo retenido deberá ser consignado en el banco `,
+            { text: datosEmpresa.banco, bold: true },
+            `, cuenta ${datosEmpresa.tipo_cuenta} No.`,
+            { text: datosEmpresa.cuenta, bold: true },
             'a nombre de la',
-            { text: ' COOPERATIVA MULTIACTIVA COASISTIR LTDA', bold: true },
+            { text: datosEmpresa.nombre, bold: true },
             ', y por favor enviar los soportes de embargo al correo ',
             {
-              text: 'cartera.coasistir@outlook.es.',
+              text: datosEmpresa.correo,
               decoration: 'underline',
               bold: true,
-              link: 'mailto:cartera.coasistir@outlook.es',
+              link: `mailto:${datosEmpresa.correo}`,
             },
             {
               text: `Cabe aclarar que cualquier acuerdo al que se llegue se enviará con este tipo de documento con su numeración interna; NUNCA haremos acuerdos verbales. Igualmente, cualquier acuerdo de descuento se hará directamente por medio de ustedes y no de forma personal con su empleado.\n\n`,
@@ -355,20 +405,24 @@ export class ReportesService {
     const pdf = this.printerPdfService.createPdf(docDefinition);
     return this.pdfDocumentToBuffer(pdf);
   }
-  async coasistir_prejuridico_codeudor(values: {
-    NOMBRE: string;
-    'TELEFONO 1': string;
-    DIRECCION: string;
-    CODEUDOR: string;
-    PAGARE: number;
-    'CUOTAS ATRAZADAS': number;
-    'MONTO ATRAZADO': string;
-    'CORREO CODEUDOR': string;
-    CIUDAD: string;
+  async coasistir_prejuridico_codeudor(params: {
+    isCompartir: boolean;
+    row: {NOMBRE: string;
+      'TELEFONO 1': string;
+      DIRECCION: string;
+      CODEUDOR: string;
+      PAGARE: number;
+      'CUOTAS ATRAZADAS': number;
+      'MONTO ATRAZADO': string;
+      'CORREO CODEUDOR': string;
+      CIUDAD: string;}
+    
   }) {
+    const { row: values, isCompartir } = params;
+    const datosEmpresa = this.getDatosEmpresa(isCompartir);
     const formattedDate = DateFormatter.getDDMMYYYY(new Date());
     const docDefinition: TDocumentDefinitions = {
-      images: this.loadImageAssets(),
+      images: this.loadImageAssets(isCompartir),
       defaultStyle: {
         fontSize: 12,
         alignment: 'justify',
@@ -378,7 +432,7 @@ export class ReportesService {
       content: [
         ...this.coasistir_header(),
         {
-          text: `Bucaramanga, ${formattedDate}`,
+          text: `${values.CIUDAD}, ${formattedDate}`,
           alignment: 'right',
           margin: [0, 0, 0, 10],
         },
@@ -405,9 +459,9 @@ export class ReportesService {
         },
         {
           text: [
-            `Comedidamente, me permito informarle que la`,
+            `Comedidamente, me permito informarle que la `,
             {
-              text: ` COOPERATIVA MULTIACTIVA COASISTIR`,
+              text: datosEmpresa.nombre,
               bold: true,
             },
             `, en esta fecha me ha conferido poder amplio y suficiente para que inicie en su representación acción Civil en su contra, tendiente a obtener el pago de la obligación contenida en el pagaré`,
@@ -461,7 +515,9 @@ De no ponerse al día en el crédito, se procederá a pasar la solicitud de emba
     const pdf = this.printerPdfService.createPdf(docDefinition);
     return this.pdfDocumentToBuffer(pdf);
   }
-  async coasistir_prejuridico_titular(values: {
+  async coasistir_prejuridico_titular(params: {
+    isCompartir: boolean;
+    row: {
     NOMBRE: string;
     'TELEFONO 1': string;
     DIRECCION: string;
@@ -470,11 +526,14 @@ De no ponerse al día en el crédito, se procederá a pasar la solicitud de emba
     'CUOTAS ATRAZADAS': number;
     'MONTO ATRAZADO': string;
     'CORREO CODEUDOR': string;
-    CIUDAD: string;
+    CIUDAD: string;}
   }) {
+    
+    const { row: values, isCompartir } = params;
+    const datosEmpresa = this.getDatosEmpresa(isCompartir);
     const formattedDate = DateFormatter.getDDMMYYYY(new Date());
     const docDefinition: TDocumentDefinitions = {
-      images: this.loadImageAssets(),
+      images: this.loadImageAssets(isCompartir),
       defaultStyle: {
         fontSize: 12,
         alignment: 'justify',
@@ -484,7 +543,7 @@ De no ponerse al día en el crédito, se procederá a pasar la solicitud de emba
       content: [
         ...this.coasistir_header(),
         {
-          text: `Bucaramanga, ${formattedDate}`,
+          text: `${values.CIUDAD}, ${formattedDate}`,
           alignment: 'right',
           margin: [0, 0, 0, 10],
         },
@@ -510,9 +569,9 @@ De no ponerse al día en el crédito, se procederá a pasar la solicitud de emba
         },
         {
           text: [
-            `Comedidamente, me permito informarle que la`,
+            `Comedidamente, me permito informarle que la `,
             {
-              text: ` COOPERATIVA MULTIACTIVA COASISTIR`,
+              text: datosEmpresa.nombre,
               bold: true,
             },
             `, en esta fecha me ha conferido poder amplio y suficiente para que inicie en su representación acción Civil en su contra, tendiente a obtener el pago de la obligación contenida en el pagaré`,

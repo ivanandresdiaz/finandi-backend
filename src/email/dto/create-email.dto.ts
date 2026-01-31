@@ -5,6 +5,10 @@ export enum EnumCartas {
   coasistir_embargo_codeudor = 'coasistir_embargo_codeudor',
   coasistir_prejuridico_codeudor = 'coasistir_prejuridico_codeudor',
   coasistir_prejuridico_titular = 'coasistir_prejuridico_titular',
+  compartir_embargo_titular = 'compartir_embargo_titular',
+  compartir_embargo_codeudor = 'compartir_embargo_codeudor',
+  compartir_prejuridico_codeudor = 'compartir_prejuridico_codeudor',
+  compartir_prejuridico_titular = 'compartir_prejuridico_titular',
 }
 
 export class EmailCarteraCartasSendDto {
