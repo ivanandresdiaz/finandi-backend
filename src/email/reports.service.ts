@@ -16,7 +16,7 @@ export class ReportesService {
      const empresa = isCompartir ? 'compartir' : 'coasistir';
     return {
       lider_cartera_firma: resolvePathAssets(
-        `../../assets/images/firmaMilagros.png`
+          `../../assets/images/${empresa}/firma.png`
         
       ),
       logo: resolvePathAssets(
@@ -76,9 +76,9 @@ export class ReportesService {
       return {
         nombre: 'COOPERATIVA DE APORTES Y CREDITO COOMPARTIR',
         nombre_minuscula: "Cooperativa de Aportes y Crédito Coompartir Ltda “COOMPARTIR LTDA”",
-        banco: 'CAJA SOCIAL',
-        cuenta: '24048578246',
-        tipo_cuenta: 'AHORROS',
+        banco: 'DAVIVIENDA',
+        cuenta: '046069999103',
+        tipo_cuenta: 'CORRIENTE',
         correo: 'cartera@compartirltda.com',
         telefonos: '607 6815454 -  607 6906601 - 318 889 6275',
       };
@@ -443,12 +443,13 @@ export class ReportesService {
               { text: `${values.CODEUDOR}`, bold: true },
 
               { text: values.DIRECCION, bold: true },
+              { text: values.CIUDAD, bold: true },
               {
                 text: `TELEFONO: ${values['TELEFONO 1']} - ${values['CORREO CODEUDOR']}`,
                 bold: true,
               },
               { text: `CODEUDOR DE ${values.NOMBRE}`, bold: true },
-              { text: values.CIUDAD, bold: true },
+              
             ],
           ],
         },
