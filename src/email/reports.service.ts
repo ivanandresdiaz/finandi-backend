@@ -494,12 +494,12 @@ De no ponerse al día en el crédito, se procederá a pasar la solicitud de emba
               { text: 'Señor(a)' },
               { text: `${values.NOMBRE}`, bold: true },
 
-              { text: values.DIRECCION, bold: true },
+              { text: `${values.DIRECCION} \n` , bold: true },
               { text: values.CIUDAD, bold: true },
-              // {
-              //   text: `TELEFONO: ${values['TELEFONO 1']} - ${values['CORREO DEUDOR']}`,
-              //   bold: true,
-              // },
+              {
+                text: `TELEFONO: ${values['TELEFONO 1']} - ${values['CORREO DEUDOR']}`,
+                bold: true,
+              },
             ],
           ],
         },
