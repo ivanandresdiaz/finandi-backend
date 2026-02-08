@@ -186,7 +186,7 @@ export class ReportesService {
       content: [
         ...this.coasistir_header(),
         {
-          text: `${values.CIUDAD}, ${formattedDate}`,
+          text: `Bucaramanga, ${formattedDate}`,
           alignment: 'right',
           margin: [0, 0, 0, 20],
         },
@@ -312,7 +312,7 @@ export class ReportesService {
         ...this.coasistir_header(),
 
         {
-          text: `${values.CIUDAD}, ${formattedDate}`,
+          text: `Bucaramanga, ${formattedDate}`,
           alignment: 'right',
           margin: [0, 0, 0, 20],
         },
@@ -432,7 +432,7 @@ export class ReportesService {
       content: [
         ...this.coasistir_header(),
         {
-          text: `${values.CIUDAD}, ${formattedDate}`,
+          text: `Bucaramanga, ${formattedDate}`,
           alignment: 'right',
           margin: [0, 0, 0, 10],
         },
@@ -544,7 +544,7 @@ De no ponerse al día en el crédito, se procederá a pasar la solicitud de emba
       content: [
         ...this.coasistir_header(),
         {
-          text: `${values.CIUDAD}, ${formattedDate}`,
+          text: `Bucaramanga, ${formattedDate}`,
           alignment: 'right',
           margin: [0, 0, 0, 10],
         },
